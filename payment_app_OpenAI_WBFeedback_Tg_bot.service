@@ -1,0 +1,17 @@
+# Для автоматического запуска бота при перезагрузке сервера копия этого файла
+# должна лежать в папке /etc/systemd/system/
+# команда для копирования файла в нужную категорию cp payment_app_OpenAI_WBFeedback_Tg_bot.service /etc/systemd/system/
+# systemctl enable payment_app_OpenAI_WBFeedback_Tg_bot - это команда в регистрации автозапуска бота при рестарте
+# service payment_app_OpenAI_WBFeedback_Tg_bot start / stop
+
+[Unit]
+Description=payment_app_OpenAI_WBFeedback_Tg_bot
+[Service]
+WorkingDirectory=/home/payment_app_OpenAI_WBFeedback_Tg_bot
+User=root
+ExecStart=/home/payment_app_OpenAI_WBFeedback_Tg_bot/venv/bin/gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:80
+Restart=on-failure
+RestartSec=5s
+[Install]
+WantedBy=multi-user.target
+EOF
