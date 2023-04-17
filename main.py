@@ -1,7 +1,7 @@
 import re
 from typing import Annotated
 
-from fastapi import FastAPI, File
+from fastapi import FastAPI, File, Form
 from loguru import logger
 from peewee import SqliteDatabase
 
@@ -34,8 +34,9 @@ app = FastAPI()
 
 
 @app.post('/payment_form_data')
-def post_payment_form_data(file: Annotated[bytes, File()]) -> dict:
-    in_data = file.decode('utf-8')
+# def post_payment_form_data(file: Annotated[bytes, File()]) -> dict:
+def post_payment_form_data(file: Annotated[str, Form()]) -> dict:
+    in_data = file#.decode('utf-8')
     order_id = re.search(r"'order_id' => '(\d+)'", in_data)
     user_id = re.search(r"'_param_user_id' => '(\d+)'", in_data)
     quantity = re.search(r"'quantity' => '(\d+)'", in_data)
