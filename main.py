@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from peewee import SqliteDatabase
 from config import *
 from loguru import logger
@@ -28,12 +28,21 @@ app = FastAPI()
 
 @app.post('/')
 def router_post_update(data: dict) -> dict:
+    logger.warning(f'incoming request -> method POST {data=}')
     user_id = data.get('user_id')
     add_to_balance = data.get('add_to_balance')
+
     update_data = update_user_balance_requests(add_to_balance=add_to_balance, user_id=user_id)
-    logger.warning(str(update_data.get('error'))) if update_data.get('error')\
-        else logger.debug(f'incoming post {data=}')
+
+    if update_data.get('error'):
+        logger.warning(str(update_data.get('error')))
     return update_data
+
+
+@app.get('/')
+def router_get_update() -> dict:
+    logger.warning(f'incoming request -> method GET')
+    return {'detail': 'method not allowed'}
 
 # import subprocess
 # subprocess.run('uvicorn main:app --reload')
