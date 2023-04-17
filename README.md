@@ -15,11 +15,16 @@ gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bin
 
 Для тестирования через curl
 curl -X 'POST' \
+  'http://127.0.0.1:8000/payment_form_data' \
+  -H 'Content-Type: application/json' \
+  -d '{"user_id": "1438292311", "add_to_balance": 15}'
+
+
+curl -X 'POST' \
   'http://5.44.40.79/' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{"user_id": "1438292311", "add_to_balance": 15}'
-
 
 curl -X 'POST' \
   'http://127.0.0.1:8000/' \

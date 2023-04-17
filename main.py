@@ -1,7 +1,7 @@
 import re
 from typing import Annotated
 
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Request
 from loguru import logger
 from peewee import SqliteDatabase
 
@@ -34,9 +34,10 @@ app = FastAPI()
 
 
 @app.post('/payment_form_data')
-# def post_payment_form_data(file: Annotated[bytes, File()]) -> dict:
-def post_payment_form_data(file: Annotated[str, Form()]) -> dict:
-    in_data = file#.decode('utf-8')
+async def post_payment_form_data(request: Request) -> dict:
+    sign = request.headers.get('Sign')
+    in_data = (await request.body()).decode('utf-8')
+    logger.debug(in_data)
     order_id = re.search(r"'order_id' => '(\d+)'", in_data)
     user_id = re.search(r"'_param_user_id' => '(\d+)'", in_data)
     quantity = re.search(r"'quantity' => '(\d+)'", in_data)
@@ -58,10 +59,10 @@ def post_payment_form_data(file: Annotated[str, Form()]) -> dict:
         result = {"payment_status": f"not valid -> {data.get('payment_status')}"}
 
     if result.get('new_balance'):
-        logger.info(f'incoming request -> method POST -> multipart/form-data -> {data=}  | {result=}')
+        logger.info(f'incoming request -> method POST -> multipart/form-data -> {data=}  | {result=} | {sign=}')
         response = {'internal_processing_result': 'Successful'}
     else:
-        logger.error(f'incoming request -> method POST -> multipart/form-data -> {data=}  | {result=}')
+        logger.error(f'incoming request -> method POST -> multipart/form-data -> {data=}  | {result=} | {sign=}')
         response = {'internal_processing_result': 'Failed'}
 
     return response
