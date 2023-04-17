@@ -14,7 +14,7 @@ db = SqliteDatabase(**DATABASE_CONFIG)
 
 def update_user_balance_requests(data):
     quantity = data.get('quantity')
-    user_id = data.get('user_id')
+    user_id = data.get('_param_user_id')
     if quantity and user_id:
         with db:
             db.execute_sql(f'UPDATE users SET balance_requests = balance_requests + ? WHERE user_id= ?;',
@@ -24,9 +24,9 @@ def update_user_balance_requests(data):
             if update_user_balance_request := cursor.fetchone():
                 result = {'new_balance': update_user_balance_request[0]}
             else:
-                result = {'error': 'user not found'}
-            return {'user_id': user_id} | result
-    return {'error': 'data not valid'}
+                result = {'error': 'user not found', 'user_id': user_id}
+            return {'user_id': user_id, 'quantity': quantity} | result
+    return {'error': 'not valid', 'user_id': user_id, 'quantity': quantity}
 
 
 app = FastAPI()
@@ -38,31 +38,6 @@ async def post_payment_form_data(request: Request) -> dict:
     in_data = await request.body()
     decoded_data = parse.unquote(in_data.decode('utf-8'))
     data = dict(parse.parse_qsl(decoded_data))
-
-    # logger.debug('1 '+str(await request.json()))
-    # logger.debug('indata-- '+str(in_data))
-    # logger.debug('indata-- '+in_data.decode('utf-8'))
-
-    # in_data = (await request.body()).decode('utf-8')
-    #
-    # order_id = re.search(r"'order_id' => '(\d+)'", in_data)
-    # user_id = re.search(r"'_param_user_id' => '(\d+)'", in_data)
-    # quantity = re.search(r"'quantity' => '(\d+)'", in_data)
-    # payment_status = re.search(r"'payment_status' => '(\S+)'", in_data)
-    #
-    # data = {
-    #     "order_id": order_id.group(1) if order_id else None,
-    #     "user_id": user_id.group(1) if user_id else None,
-    #     "quantity": quantity.group(1) if quantity else None,
-    #     "payment_status": payment_status.group(1) if payment_status else None,
-    # }
-
-    # data = {
-    #     "order_id": in_data.get('order_id'),
-    #     "user_id": in_data.get('user_id'),
-    #     "quantity": in_data.get('quantity'),
-    #     "payment_status": in_data.get('payment_status'),
-    # }
 
     if data.get('payment_status') == 'success':
         try:
