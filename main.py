@@ -36,10 +36,12 @@ app = FastAPI()
 @app.post('/payment_form_data')
 async def post_payment_form_data(request: Request) -> dict:
     sign = request.headers.get('Sign')
-    in_data = await request.json()
+    in_data = dict(await request.body())
+    logger.debug('1 '+str(await request.json()))
+    logger.debug('2 '+str(await request.body()))
+    logger.debug('3 '+str(in_data))
 
     # in_data = (await request.body()).decode('utf-8')
-    # logger.debug(str(await request.json()))
     #
     # order_id = re.search(r"'order_id' => '(\d+)'", in_data)
     # user_id = re.search(r"'_param_user_id' => '(\d+)'", in_data)
