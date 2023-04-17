@@ -1,5 +1,4 @@
-import re
-from typing import Annotated
+from urllib import parse
 
 from fastapi import FastAPI, Request
 from loguru import logger
@@ -37,10 +36,12 @@ app = FastAPI()
 async def post_payment_form_data(request: Request) -> dict:
     sign = request.headers.get('Sign')
     in_data = await request.body()
+    decoded_data = parse.unquote(in_data.decode('utf-8'))
+    data = dict(parse.parse_qsl(decoded_data))
+
     # logger.debug('1 '+str(await request.json()))
-    # logger.debug('2 '+str(await request.body()))
-    logger.debug('indata-- '+str(in_data))
-    logger.debug('indata-- '+in_data.decode('utf-8'))
+    # logger.debug('indata-- '+str(in_data))
+    # logger.debug('indata-- '+in_data.decode('utf-8'))
 
     # in_data = (await request.body()).decode('utf-8')
     #
@@ -62,12 +63,6 @@ async def post_payment_form_data(request: Request) -> dict:
     #     "quantity": in_data.get('quantity'),
     #     "payment_status": in_data.get('payment_status'),
     # }
-    data = {
-        "order_id": None,
-        "user_id": None,
-        "quantity": None,
-        "payment_status": None,
-    }
 
     if data.get('payment_status') == 'success':
         try:
@@ -78,10 +73,10 @@ async def post_payment_form_data(request: Request) -> dict:
         result = {"payment_status": f"not valid -> {data.get('payment_status')}"}
 
     if result.get('new_balance'):
-        logger.info(f'incoming request -> method POST -> multipart/form-data -> {data=}  | {result=} | {sign=}')
+        logger.info(f'request -> POST -> {result=}| {data=} | {sign=}')
         response = {'internal_processing_result': 'Successful'}
     else:
-        logger.error(f'incoming request -> method POST -> multipart/form-data -> {data=}  | {result=} | {sign=}')
+        logger.error(f'request -> POST -> {result=} | {data=} | {sign=}')
         response = {'internal_processing_result': 'Failed'}
 
     return response
