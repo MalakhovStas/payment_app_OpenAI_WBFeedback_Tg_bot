@@ -36,7 +36,7 @@ app = FastAPI()
 @app.post('/payment_form_data')
 async def post_payment_form_data(request: Request) -> dict:
     sign = request.headers.get('Sign')
-    in_data = dict(await request.body())
+    in_data = await request.body()
     logger.debug('1 '+str(await request.json()))
     logger.debug('2 '+str(await request.body()))
     logger.debug('3 '+str(in_data))
@@ -55,11 +55,17 @@ async def post_payment_form_data(request: Request) -> dict:
     #     "payment_status": payment_status.group(1) if payment_status else None,
     # }
 
+    # data = {
+    #     "order_id": in_data.get('order_id'),
+    #     "user_id": in_data.get('user_id'),
+    #     "quantity": in_data.get('quantity'),
+    #     "payment_status": in_data.get('payment_status'),
+    # }
     data = {
-        "order_id": in_data.get('order_id'),
-        "user_id": in_data.get('user_id'),
-        "quantity": in_data.get('quantity'),
-        "payment_status": in_data.get('payment_status'),
+        "order_id": None,
+        "user_id": None,
+        "quantity": None,
+        "payment_status": None,
     }
 
     if data.get('payment_status') == 'success':
