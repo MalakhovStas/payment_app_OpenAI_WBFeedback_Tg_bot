@@ -1,7 +1,7 @@
 import re
 from typing import Annotated
 
-from fastapi import FastAPI, File, Form
+from fastapi import FastAPI, Form
 from loguru import logger
 from peewee import SqliteDatabase
 
