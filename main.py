@@ -13,7 +13,8 @@ db = SqliteDatabase(**DATABASE_CONFIG)
 
 
 def update_user_balance_requests(data):
-    quantity = data.get('quantity')
+    # quantity = data.get('quantity')
+    quantity = data.get('products[0][quantity]')
     user_id = data.get('_param_user_id')
     if quantity and user_id:
         with db:

@@ -16,8 +16,9 @@ gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bin
 Для тестирования через curl
 curl -X 'POST' \
   'http://127.0.0.1:8000/payment_form_data' \
-  -H 'Content-Type: application/json' \
-  -d '{"user_id": "1438292311", "add_to_balance": 15}'
+  -H 'Sign=bjclbljblcaskkcnak' \
+  -d 'date=2023-04-18T00%3A00%3A00%2B03%3A00&order_id=1&order_num=test&domain=marpla.payform.ru&sum=1000.00&customer_phone=%2B79999999999&customer_email=email%40domain.com&customer_extra=%D1%82%D0%B5%D1%81%D1%82&payment_type=%D0%9F%D0%BB%D0%B0%D1%81%D1%82%D0%B8%D0%BA%D0%BE%D0%B2%D0%B0%D1%8F+%D0%BA%D0%B0%D1%80%D1%82%D0%B0+Visa%2C+MasterCard%2C+%D0%9C%D0%98%D0%A0&commission=3.5&commission_sum=35.00&attempt=1&sys=test&products%5B0%5D%5Bname%5D=%D0%94%D0%BE%D1%81%D1%82%D1%83%D0%BF+%D0%BA+%D0%BE%D0%B1%D1%83%D1%87%D0%B0%D1%8E%D1%89%D0%B8%D0%BC+%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D0%B0%D0%BC&products%5B0%5D%5Bprice%5D=1000.00&products%5B0%5D%5Bquantity%5D=1&products%5B0%5D%5Bsum%5D=1000.00&payment_status=success&payment_status_description=%D0%A3%D1%81%D0%BF%D0%B5%D1%88%D0%BD%D0%B0%D1%8F+%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D0%B0'
+
 
 curl -X 'POST' \
   'http://5.44.40.79/payment_form_data' \
