@@ -37,9 +37,10 @@ app = FastAPI()
 async def post_payment_form_data(request: Request) -> dict:
     sign = request.headers.get('Sign')
     in_data = await request.body()
-    logger.debug('1 '+str(await request.json()))
-    logger.debug('2 '+str(await request.body()))
-    logger.debug('3 '+str(in_data))
+    # logger.debug('1 '+str(await request.json()))
+    # logger.debug('2 '+str(await request.body()))
+    logger.debug('indata-- '+str(in_data))
+    logger.debug('indata-- '+in_data.decode('utf-8'))
 
     # in_data = (await request.body()).decode('utf-8')
     #

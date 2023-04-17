@@ -19,6 +19,10 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{"user_id": "1438292311", "add_to_balance": 15}'
 
+curl -X 'POST' \
+  'http://5.44.40.79/payment_form_data' \
+  -H 'Content-Type: application/json' \
+  -d '{"user_id": "1438292311", "add_to_balance": 15}'
 
 curl -X 'POST' \
   'http://5.44.40.79/' \
