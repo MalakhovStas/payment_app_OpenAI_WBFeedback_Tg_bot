@@ -36,18 +36,28 @@ app = FastAPI()
 @app.post('/payment_form_data')
 async def post_payment_form_data(request: Request) -> dict:
     sign = request.headers.get('Sign')
-    in_data = (await request.body()).decode('utf-8')
-    logger.debug(in_data)
-    order_id = re.search(r"'order_id' => '(\d+)'", in_data)
-    user_id = re.search(r"'_param_user_id' => '(\d+)'", in_data)
-    quantity = re.search(r"'quantity' => '(\d+)'", in_data)
-    payment_status = re.search(r"'payment_status' => '(\S+)'", in_data)
+    in_data = await request.json()
+
+    # in_data = (await request.body()).decode('utf-8')
+    # logger.debug(str(await request.json()))
+    #
+    # order_id = re.search(r"'order_id' => '(\d+)'", in_data)
+    # user_id = re.search(r"'_param_user_id' => '(\d+)'", in_data)
+    # quantity = re.search(r"'quantity' => '(\d+)'", in_data)
+    # payment_status = re.search(r"'payment_status' => '(\S+)'", in_data)
+    #
+    # data = {
+    #     "order_id": order_id.group(1) if order_id else None,
+    #     "user_id": user_id.group(1) if user_id else None,
+    #     "quantity": quantity.group(1) if quantity else None,
+    #     "payment_status": payment_status.group(1) if payment_status else None,
+    # }
 
     data = {
-        "order_id": order_id.group(1) if order_id else None,
-        "user_id": user_id.group(1) if user_id else None,
-        "quantity": quantity.group(1) if quantity else None,
-        "payment_status": payment_status.group(1) if payment_status else None,
+        "order_id": in_data.get('order_id'),
+        "user_id": in_data.get('user_id'),
+        "quantity": in_data.get('quantity'),
+        "payment_status": in_data.get('payment_status'),
     }
 
     if data.get('payment_status') == 'success':
