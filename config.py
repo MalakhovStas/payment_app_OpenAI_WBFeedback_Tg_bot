@@ -32,3 +32,11 @@ PAYMENTS_PACKAGES = {
     "MediumRequestPackage": {"quantity": 100, "price": 199},
     "BigRequestPackage": {"quantity": 200, "price": 379}
 }
+
+""" Параметры отправки сообщений от бота пользователям и и администраторам"""
+BOT_TOKEN = '5939265856:AAEStyM551unY3h8kLJewRmFS-DMLBKeoQU'
+# ADMINS = ['1438292311', '384480523']
+ADMINS = ['1438292311']
+TEXT_FOR_ADMINS = 'Поступила оплата от пользователя: {user_id}, сумма: {sum}'
+TEXT_FOR_USER = 'Ваш баланс ответов пополнен на {quantity} ответов'
+URL = 'https://api.telegram.org/{user_id}/sendMessage?bot={bot_token}&text={text}'

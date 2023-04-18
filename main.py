@@ -4,13 +4,20 @@ from urllib import parse
 from fastapi import FastAPI, Request
 from loguru import logger
 from peewee import SqliteDatabase
-
+import aiohttp
 from config import *
 
 logger.add(**LOGGER_ERRORS)
 logger.add(**LOGGER_DEBUG)
 
 db = SqliteDatabase(**DATABASE_CONFIG)
+
+
+async def aiohttp_request(url):
+    connector = aiohttp.TCPConnector(ssl=False)
+    async with aiohttp.ClientSession(connector=connector) as session:
+        async with session.get(url, ssl=False, timeout=10) as response:
+            return response
 
 
 def update_user_balance_requests(data):
@@ -31,6 +38,7 @@ def update_user_balance_requests(data):
 
             cursor = db.execute_sql(f'SELECT balance_requests FROM users WHERE user_id = ?;', (user_id,))
             if update_user_balance_request := cursor.fetchone():
+
                 result = {'new_balance': update_user_balance_request[0]}
             else:
                 result = {'error': 'user not found', 'user_id': user_id}
@@ -57,6 +65,19 @@ async def post_payment_form_data(request: Request) -> dict:
         result = {"payment_status": f"not valid -> {data.get('payment_status')}"}
 
     if result.get('new_balance'):
+        await aiohttp_request(
+            url=URL.format(
+                user_id=data.get('_param_user_id'), bot_token=BOT_TOKEN,
+                text=TEXT_FOR_USER.format(quantity=PAYMENTS_PACKAGES.get(data.get('products[0][name]')).get('quantity'))
+            )
+        )
+        for admin in ADMINS:
+            await aiohttp_request(
+                url=URL.format(
+                    user_id=admin, bot_token=BOT_TOKEN,
+                    text=TEXT_FOR_ADMINS.format(user_id=data.get('_param_user_id'), sum=data.get('products[0][sum]'))
+                )
+            )
         logger.info(f'request -> POST -> {result=}| {data=} | {sign=}')
         response = {'internal_processing_result': 'Successful'}
     else:
