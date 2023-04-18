@@ -1,3 +1,4 @@
+import json
 from urllib import parse
 
 from fastapi import FastAPI, Request
@@ -26,7 +27,7 @@ def update_user_balance_requests(data):
             db.execute_sql(f'UPDATE users SET balance_requests = balance_requests + ? WHERE user_id= ?;',
                            (quantity, user_id))
             db.execute_sql(f'UPDATE payments SET payment_status = ?, notification_data = ?, order_id_payment_system = ?'
-                           f' WHERE id = ?;', (payment_status, data, order_id_payment_system, order_num))
+                           f' WHERE id = ?;', (payment_status, json.dumps(data), order_id_payment_system, order_num))
 
             cursor = db.execute_sql(f'SELECT balance_requests FROM users WHERE user_id = ?;', (user_id,))
             if update_user_balance_request := cursor.fetchone():
