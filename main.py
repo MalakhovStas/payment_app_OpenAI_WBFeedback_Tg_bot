@@ -13,13 +13,20 @@ db = SqliteDatabase(**DATABASE_CONFIG)
 
 
 def update_user_balance_requests(data):
-    # quantity = data.get('quantity')
-    quantity = data.get('products[0][quantity]')
+    # quantity = data.get('products[0][quantity]')
+    payment_status = data.get('payment_status')
+    package_name = data.get('products[0][name]')
+    quantity = PAYMENTS_PACKAGES.get(package_name).get('quantity')
     user_id = data.get('_param_user_id')
+    order_id_payment_system = data.get('order_id')
+    order_num = data.get('order_num')
+
     if quantity and user_id:
         with db:
             db.execute_sql(f'UPDATE users SET balance_requests = balance_requests + ? WHERE user_id= ?;',
                            (quantity, user_id))
+            db.execute_sql(f'UPDATE payments SET payment_status = ?, notification_data = ?, order_id_payment_system = ?'
+                           f' WHERE id = ?;', (payment_status, data, order_id_payment_system, order_num))
 
             cursor = db.execute_sql(f'SELECT balance_requests FROM users WHERE user_id = ?;', (user_id,))
             if update_user_balance_request := cursor.fetchone():

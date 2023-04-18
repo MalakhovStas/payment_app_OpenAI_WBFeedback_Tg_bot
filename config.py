@@ -24,3 +24,11 @@ PATH_FILE_ERRORS_LOGS = 'logs/errors.log'
 
 LOGGER_DEBUG = {'sink': PATH_FILE_DEBUG_LOGS, 'level': 'DEBUG', 'format': debug_format} | logger_common_args
 LOGGER_ERRORS = {'sink': PATH_FILE_ERRORS_LOGS, 'level': 'WARNING', 'format': errors_format} | logger_common_args
+
+""" Пакеты запросов к оплате"""
+
+PAYMENTS_PACKAGES = {
+    "SmallRequestPackage": {"quantity": 30, "price": 79},
+    "MediumRequestPackage": {"quantity": 100, "price": 199},
+    "BigRequestPackage": {"quantity": 200, "price": 379}
+}
